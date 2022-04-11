@@ -8,6 +8,8 @@ pytest = "*"
 requests = "*"
 black = "*"
 jsonpath = "*"
+assertpy = "*"
+jsonpath-ng = "*"
 
 [dev-packages]
 

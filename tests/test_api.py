@@ -1,19 +1,49 @@
 import json
 import jsonpath
-from data.testData import baseUrl, endpoints
-from services.requests import APIRequest
-from utils.helpers import makePayload
-from services.asserts import checkSuccessStatus
+import pytest
+from assertpy import assert_that
+
+from factory.handle_process import basicPostReq, basicGetReq, getDefaultHeader, loadJson
+from services.assertions.asserts import checkSuccessStatus, checkBadRequest
+from services.rest_actions.requests import APIRequest
+from test_data.constants import baseUrl
+from test_data.endpoints import Endpoint
 
 
+@pytest.mark.xfail
 def test_successful_registration():
-    v = baseUrl + endpoints["register"]
-    x = APIRequest.postReqWithoutHeader(v, makePayload())
-    checkSuccessStatus(x)
+    """
+    Test on hitting POST API, we'll create an user
+    """
+    req = basicPostReq("register")
+    checkSuccessStatus(req)
 
 
 def test_fetch_user():
-    v = baseUrl + endpoints["user"]
-    x = APIRequest.get(v)
-    responseJson = json.loads(x.text)
-    checkSuccessStatus(x)
+    """
+    Test on hitting GET API, we get a user named Janet
+    """
+    req = basicGetReq("user")
+    checkSuccessStatus(req)
+    req = json.dumps(req.text)
+    assert_that(req).contains("Janet")
+
+
+def test_read_all_has_Janet():
+    """
+    Test on hitting GET API, we get a user named Janet in the list of people
+    """
+    req = basicGetReq("user")
+    responseJson = json.loads(req.text)
+    checkSuccessStatus(req)
+    assert jsonpath.jsonpath(responseJson, "$.data.first_name")[0] == "Janet"
+    assert jsonpath.jsonpath(responseJson, "$.data.id")[0] == 2
+
+
+def test_unsuccessfull_login():
+    """
+    Test on hitting POST API, for unsuccessfull login
+    """
+    makeUrl = baseUrl + Endpoint().get_endpoint()["login"]
+    req = APIRequest().post(makeUrl, loadJson(), getDefaultHeader())
+    checkBadRequest(req)

@@ -12,11 +12,7 @@ class Response:
 
 
 class APIRequest:
-    def postReqWithoutHeader(url, payload=None):
-        response = requests.post(url, json=payload)
-        return response
-
-    def get(url):
+    def get(self, url):
         response = requests.get(url)
         return response
 
