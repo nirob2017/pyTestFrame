@@ -5,28 +5,28 @@ from test_data.constants import user, baseUrl
 from test_data.endpoints import Endpoint
 
 
-def getDefaultHeader(key, value):
+def get_default_header(key, value):
     header = {key: value}
     return header
 
 
-def getPayload():
+def get_payload():
     payload = {user["email"], user["password"]}
     return payload
 
 
-def basicGetReq(endpoint):
+def basic_get_req(endpoint):
     makeUrl = baseUrl + Endpoint().get_endpoint()[endpoint]
     req = APIRequest().get(makeUrl)
     return req
 
 
-def basicPostReq(endpoint):
+def basic_post_req(endpoint):
     makeUrl = baseUrl + Endpoint().get_endpoint()[endpoint]
-    req = APIRequest().post(f"{makeUrl}/getPayload()", getDefaultHeader())
+    req = APIRequest().post(f"{makeUrl}/getPayload()", get_default_header())
     return req
 
 
-def loadJson():
-    data = json.dumps("email: peter@klaven")
+def make_json_data(key, value):
+    data = json.dumps(f"${key}" + ":" f"${value}")
     return data

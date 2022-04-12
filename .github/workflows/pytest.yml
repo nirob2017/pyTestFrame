@@ -34,4 +34,4 @@ jobs:
           EMAIL: ${{ secrets.EMAIL }}
           PASS:  ${{ secrets.PASS }}
         run: |
-          pipenv run pytest . -v
+          pipenv run pytest . -sv

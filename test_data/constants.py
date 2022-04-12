@@ -3,9 +3,9 @@ from utils.helpers import EnvironmentVars
 baseUrl = "https://reqres.in/"
 
 user = {"email": EnvironmentVars.Email, "password": EnvironmentVars.Password}
-wrong_user = {"email": "peter@klaven"}
+wrong_user = {"emailText": "email", "emailData": "peter@klaven"}
 
-user_Janet = [
+user_janet = [
     {
         "data": {
             "id": 2,

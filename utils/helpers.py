@@ -18,14 +18,14 @@ class EnvironmentVars:
     APIToken = os.getenv("API_TOKEN")
 
 
-def makePayload():
+def make_payload():
     data = json.loads(
-        '{"email": "eve.holt@reqres.in","password": "' + randomDigits(5) + '"}'
+        '{"email": "eve.holt@reqres.in","password": "' + random_digits(5) + '"}'
     )
     return data
 
 
-def randomDigits(digits):
+def random_digits(digits):
     lower = 10 ** (digits - 1)
     upper = 10**digits - 1
     return str(random.randint(lower, upper))
