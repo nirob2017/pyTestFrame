@@ -1,3 +1,5 @@
+import json
+
 from assertpy import assert_that
 
 
@@ -9,8 +11,9 @@ def checkBadRequest(self):
     assert self.status_code == 400
 
 
-def assert_people_have_person_with_first_name(response, name):
-    assert_that(response.as_dict).extracting("first_name").is_not_empty().contains(name)
+def check_response(response, key, value):
+    response_content = json.loads(str(response))
+    assert response_content[key] == value
 
 
 def assert_id_is_present(is_new_user_created):

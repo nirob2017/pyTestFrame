@@ -4,9 +4,13 @@ import pytest
 from assertpy import assert_that
 
 from factory.handle_process import basicPostReq, basicGetReq, getDefaultHeader, loadJson
-from services.assertions.asserts import checkSuccessStatus, checkBadRequest
+from services.assertions.asserts import (
+    checkSuccessStatus,
+    checkBadRequest,
+    check_response,
+)
 from services.rest_actions.requests import APIRequest
-from test_data.constants import baseUrl
+from test_data.constants import baseUrl, headers
 from test_data.endpoints import Endpoint
 
 
@@ -45,5 +49,10 @@ def test_unsuccessfull_login():
     Test on hitting POST API, for unsuccessfull login
     """
     makeUrl = baseUrl + Endpoint().get_endpoint()["login"]
-    req = APIRequest().post(makeUrl, loadJson(), getDefaultHeader())
+    req = APIRequest().post(
+        makeUrl,
+        loadJson(),
+        getDefaultHeader(headers["content_type"], headers["app_json"]),
+    )
     checkBadRequest(req)
+    check_response(req, "error", "Missing password")

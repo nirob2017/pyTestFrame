@@ -1,6 +1,8 @@
+from utils.helpers import EnvironmentVars
+
 baseUrl = "https://reqres.in/"
 
-user = {"email": "eve.holt@reqres.in", "password": "pistol"}
+user = {"email": EnvironmentVars.Email, "password": EnvironmentVars.Password}
 wrong_user = {"email": "peter@klaven"}
 
 user_Janet = [
@@ -18,3 +20,11 @@ user_Janet = [
         },
     }
 ]
+
+headers = {
+    "Accept-Charset": "utf-8",
+    "Connection": "keep-alive",
+    "content_type": "Content-Type",
+    "app_json": "application/json",
+    "app_x_encoded": "application/x-www-form-urlencoded",
+}

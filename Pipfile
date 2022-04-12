@@ -10,6 +10,7 @@ black = "*"
 jsonpath = "*"
 assertpy = "*"
 jsonpath-ng = "*"
+python-dotenv = "*"
 
 [dev-packages]
 

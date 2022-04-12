@@ -5,8 +5,8 @@ from test_data.constants import user, baseUrl
 from test_data.endpoints import Endpoint
 
 
-def getDefaultHeader():
-    header = {"Content-Type": "application/json"}
+def getDefaultHeader(key, value):
+    header = {key: value}
     return header
 
 

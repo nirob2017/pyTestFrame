@@ -14,7 +14,7 @@ class Response:
 class APIRequest:
     def get(self, url):
         response = requests.get(url)
-        return response
+        return self.__get_responses(response)
 
     def post(self, url, payload=None, headers=None):
         response = requests.post(url, data=payload, headers=headers)
