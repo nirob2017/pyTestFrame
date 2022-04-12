@@ -12,9 +12,10 @@ from factory.handle_process import (
 from services.assertions.asserts import (
     check_success_status,
     check_bad_Request,
-    load_json, check_response,
+    load_json,
+    check_response,
 )
-from services.rest_actions.requests2 import APIUtility
+from services.rest_actions.requests import APIRequest
 from test_data.constants import baseUrl, headers, wrong_user, user_janet
 from test_data.endpoints import Endpoint
 
@@ -57,7 +58,7 @@ def test_unsuccessfull_login():
     Test on hitting POST API, for unsuccessfull login
     """
     makeUrl = baseUrl + Endpoint().get_endpoint()["login"]
-    req = APIUtility().post(
+    req = APIRequest().post(
         makeUrl,
         make_json_data(wrong_user["emailText"], wrong_user["emailData"]),
         get_default_header(headers["content_type"], headers["app_json"]),
