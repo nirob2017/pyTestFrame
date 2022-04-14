@@ -62,7 +62,7 @@ def test_unsuccessfull_login(invalid_user_data):
     Assertions().check_bad_Request(req)
 
 
-@pytest.mark.parametrize("key, value", [("id", "715"), ("id", "712")])
+@pytest.mark.parametrize("key, value", [("id", "715"), ("name", "Lokesh Patel")])
 def test_xml_response(key, value):
     """
     Test on hitting GET API, for testing xml response
