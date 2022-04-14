@@ -33,5 +33,7 @@ jobs:
         env:
           EMAIL: ${{ secrets.EMAIL }}
           PASS:  ${{ secrets.PASS }}
+          Base_Url:  ${{ secrets.BASE_URL }}
+          Xml_Url:  ${{ secrets.XML_URL }}
         run: |
-          pipenv run pytest . -sv
+          pipenv run pytest . -s -v --md-report

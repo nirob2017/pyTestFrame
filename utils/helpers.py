@@ -2,25 +2,15 @@ import random
 import json
 from time import time
 from dotenv import load_dotenv
-import os
-from dataclasses import dataclass
+
+from conftest import EnvironmentVars
 
 load_dotenv()
 
 
-@dataclass
-class EnvironmentVars:
-    """Return all secret environment variables"""
-
-    Email = os.getenv("EMAIL")
-    Password = os.getenv("PASS")
-    APIKey = os.getenv("API_KEY")
-    APIToken = os.getenv("API_TOKEN")
-
-
 def make_payload():
     data = json.loads(
-        '{"email": "eve.holt@reqres.in","password": "' + random_digits(5) + '"}'
+        '{"email":' + EnvironmentVars.Email + ',"password": "' + random_digits(5) + '"}'
     )
     return data
 

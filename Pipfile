@@ -11,6 +11,10 @@ jsonpath = "*"
 assertpy = "*"
 jsonpath-ng = "*"
 python-dotenv = "*"
+xmltodict = "*"
+lxml = "*"
+install = "*"
+pytest-md-report = "*"
 
 [dev-packages]
 

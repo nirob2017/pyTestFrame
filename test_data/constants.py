@@ -1,9 +1,6 @@
-from utils.helpers import EnvironmentVars
-
-baseUrl = "https://reqres.in/"
+from conftest import EnvironmentVars
 
 user = {"email": EnvironmentVars.Email, "password": EnvironmentVars.Password}
-wrong_user = {"emailText": "email", "emailData": "peter@klaven"}
 
 user_janet = [
     {
@@ -25,6 +22,6 @@ headers = {
     "Accept-Charset": "utf-8",
     "Connection": "keep-alive",
     "content_type": "Content-Type",
-    "app_json": "application/json",
+    "application_json": "application/json",
     "app_x_encoded": "application/x-www-form-urlencoded",
 }
