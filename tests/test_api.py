@@ -1,4 +1,5 @@
 import jsonpath
+import pytest
 from assertpy import assert_that
 
 from conftest import EnvironmentVars
@@ -61,7 +62,8 @@ def test_unsuccessfull_login(invalid_user_data):
     Assertions().check_bad_Request(req)
 
 
-def test_xml_response():
+@pytest.mark.parametrize("key, value", [("id", "715"), ("id", "712")])
+def test_xml_response(key, value):
     """
     Test on hitting GET API, for testing xml response
     """
@@ -73,10 +75,9 @@ def test_xml_response():
     json_object = JSONUtil.load_json(json_string)
     for k, v in json_object.items():
         for m, n in json_object[k]["travelers"].items():
-            print(len(n))
             for dic in n:
                 for val, cal in dic.items():
-                    assert n[0]["id"] == "715"
+                    assert n[0][key] == value
 
     assert (
         json_object["TravelerinformationResponse"]["travelers"]["Travelerinformation"][

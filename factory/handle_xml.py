@@ -2,6 +2,8 @@ from lxml import etree as et
 from xml.dom import minidom
 import xmltodict
 
+from test_data.constants import headers
+
 
 class XMLUtil:
     def __init__(self, xml=None):
@@ -23,7 +25,7 @@ class XMLUtil:
 
     def load_from_json(self, json_str):
         xml_str = xmltodict.unparse(json_str)
-        self.__init__(str(xml_str).encode("utf-8"))
+        self.__init__(str(xml_str).encode(headers["Accept-Charset"]))
 
     def get_xml_string(self):
         xml = et.tostring(self.tree)
