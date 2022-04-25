@@ -29,7 +29,7 @@ def test_fetch_user():
     """
     Test on hitting GET API, we get a user named Janet
     """
-    req = basic_get_req("user")
+    req = basic_get_req(EnvironmentVars.BaseURL, Endpoint().get_endpoint()["user"])
     Assertions().check_success_status(req)
     req = JSONUtil.dump_json(req.text)
     assert_that(req).contains("Janet")
@@ -39,7 +39,7 @@ def test_read_all_has_Janet():
     """
     Test on hitting GET API, we get a user named Janet in the list of people
     """
-    req = basic_get_req("user")
+    req = basic_get_req(EnvironmentVars.BaseURL, Endpoint().get_endpoint()["user"])
     Assertions().check_success_status(req)
     Assertions().check_response(req, "data", user_janet[0]["data"])
     data = JSONUtil.load_json(req.text)
@@ -62,7 +62,7 @@ def test_unsuccessfull_login(invalid_user_data):
     Assertions().check_bad_Request(req)
 
 
-@pytest.mark.parametrize("key, value", [("id", "715"), ("name", "Lokesh Patel")])
+@pytest.mark.parametrize("key, value", [("id", "761"), ("name", "Xim Cornel")])
 def test_xml_response(key, value):
     """
     Test on hitting GET API, for testing xml response
@@ -83,5 +83,5 @@ def test_xml_response(key, value):
         json_object["TravelerinformationResponse"]["travelers"]["Travelerinformation"][
             0
         ]["name"]
-        == "Lokesh Patel"
+        == "Xim Cornel"
     )
