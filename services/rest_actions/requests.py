@@ -12,16 +12,20 @@ class Response:
 
 
 class APIRequest:
-    def postReqWithoutHeader(url, payload=None):
-        response = requests.post(url, json=payload)
-        return response
-
-    def get(url):
+    def get(self, url):
         response = requests.get(url)
-        return response
+        return self.__get_responses(response)
 
     def post(self, url, payload=None, headers=None):
         response = requests.post(url, data=payload, headers=headers)
+        return self.__get_responses(response)
+
+    def put(self, url, payload=None, headers=None):
+        response = requests.put(url, data=payload, headers=headers)
+        return self.__get_responses(response)
+
+    def patch(self, url, payload=None, headers=None):
+        response = requests.patch(url, data=payload, headers=headers)
         return self.__get_responses(response)
 
     def delete(self, url):

@@ -1,17 +1,21 @@
-import json
 import random
 import json
 from time import time
+from dotenv import load_dotenv
+
+from conftest import EnvironmentVars
+
+load_dotenv()
 
 
-def makePayload():
+def make_payload():
     data = json.loads(
-        '{"email": "eve.holt@reqres.in","password": "' + randomDigits(5) + '"}'
+        '{"email":' + EnvironmentVars.Email + ',"password": "' + random_digits(5) + '"}'
     )
     return data
 
 
-def randomDigits(digits):
+def random_digits(digits):
     lower = 10 ** (digits - 1)
     upper = 10**digits - 1
     return str(random.randint(lower, upper))
