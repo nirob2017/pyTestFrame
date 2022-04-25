@@ -15,6 +15,7 @@ xmltodict = "*"
 lxml = "*"
 install = "*"
 pytest-md-report = "*"
+django-recaptcha = "*"
 
 [dev-packages]
 

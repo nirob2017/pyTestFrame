@@ -25,3 +25,5 @@ headers = {
     "application_json": "application/json",
     "app_x_encoded": "application/x-www-form-urlencoded",
 }
+
+error_message = "Authentication credentials were not provided."

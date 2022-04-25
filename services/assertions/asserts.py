@@ -15,6 +15,10 @@ class Assertions:
         assert response.status_code == 400
 
     @staticmethod
+    def check_unauthorized_response(response):
+        assert response.status_code == 401
+
+    @staticmethod
     def check_response(response, key=None, value=None):
         req = JSONUtil.load_json(response.text)
         assert req[key] == value
