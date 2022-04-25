@@ -20,8 +20,8 @@ def make_user_payload():
     return payload
 
 
-def basic_get_req(endpoint):
-    makeUrl = EnvironmentVars.BaseURL + Endpoint().get_endpoint()[endpoint]
+def basic_get_req(url, endpoint):
+    makeUrl = url + endpoint
     req = APIRequest().get(makeUrl)
     return req
 
