@@ -7,13 +7,14 @@ class Endpoint:
             "login": "api/login",
             "login_pass": "o/token/",
             "verified_page": "drops/open/?dropType=verified&size=6&current=1",
-            "verified_store": "builder/get-storefront/?store_url=",
+            "store_page": "builder/get-storefront/?store_url=",
             "wallets": "user/wallet/verified/",
             "stripe_list_card": "stripe/list-cards/",
             "spendable_eth": "user/spendable-eth/",
             "gemini_balance": "user/get-gemini-balance/",
             "gemini_token": "user/is-gemini-token-valid/",
             "complete_purchase": "user/show-completed-purchases/?current=1&size=1",
+            "curated_page": "drops/open/?dropType=curated&size=6&current=1",
         }
         if key is None:
             return endpoints

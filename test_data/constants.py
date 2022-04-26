@@ -24,6 +24,10 @@ headers = {
     "content_type": "Content-Type",
     "application_json": "application/json",
     "app_x_encoded": "application/x-www-form-urlencoded",
+    "bearer": "Bearer",
+    "authentication": "Authorization",
 }
 
-error_message = "Authentication credentials were not provided."
+error_message_body = "Authentication credentials were not provided."
+token = " 54u1Y7Mp1M9sm8CLmHmj93Ef5uDu83"
+wallet_address = "0xc0f6080a153fb94b299bc103da13e8b29b59ba02"

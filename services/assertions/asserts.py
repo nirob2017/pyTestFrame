@@ -19,6 +19,10 @@ class Assertions:
         assert response.status_code == 401
 
     @staticmethod
+    def check_internal_server_error_response(response):
+        assert response.status_code == 500
+
+    @staticmethod
     def check_response(response, key=None, value=None):
         req = JSONUtil.load_json(response.text)
         assert req[key] == value
