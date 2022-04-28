@@ -5,7 +5,12 @@ from factory.handle_json import JSONUtil
 from factory.handle_process import make_header, basic_get_req
 from services.assertions.asserts import Assertions
 from services.rest_actions.requests import APIRequest
-from test_data.constants import headers, error_message_body, token, wallet_address
+from test_data.constants import (
+    headers,
+    error_message_body,
+    token,
+    wallet_address,
+)
 from test_data.endpoints import Endpoint
 
 
@@ -97,13 +102,6 @@ def test_purchase_verified_nft_without_login():
     authentication_error_assertions_of_api("complete_purchase")
 
 
-def authentication_error_assertions_of_api(endpoint):
-    req = basic_get_req(EnvironmentVars.nfgwURL, Endpoint().get_endpoint()[endpoint])
-    req_data = JSONUtil().load_json(req.text)
-    assert req_data["detail"] == error_message_body
-    Assertions().check_unauthorized_response(req)
-
-
 def test_purchase_curated_nft_with_login():
     """
     Test for visiting curated NFT page, then store NFT & making a purchase of an NFT using bearer token
@@ -171,6 +169,57 @@ def test_purchase_curated_nft_with_login():
     Assertions().check_success_status(purchase_response)
 
 
+def test_select_nft_from_marketplace():
+    """
+    Test for visiting marketplace page, then collection page, after that selecting and NFT &
+    making a purchase of an NFT using bearer token
+    """
+
+    params = {
+        "page": {"current": 1, "size": 1},
+        "filter": {"currently_on_sale": True, "listing_type": ["curated"]},
+    }
+
+    market_page_req = APIRequest().get(
+        EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["marketplace_page"],
+        make_header(headers["content_type"], headers["app_x_encoded"]),
+        JSONUtil().dump_json(params),
+    )
+
+    # Processing Json Response
+    result = JSONUtil().load_json(market_page_req.text)
+
+    # Retrieving collection page address from json data
+    collection_page_address = result["data"]["results"][0]["niftyContractAddress"]
+    print(collection_page_address)
+    Assertions().check_success_status(market_page_req)
+
+    # Visiting collection page
+    collection_page_req = basic_get_req(
+        EnvironmentVars.nfgwURL,
+        Endpoint().make_collection_page_endpoint(collection_page_address),
+    )
+    Assertions().check_success_status(collection_page_req)
+
+    params_for_nft_collection = {
+        "page": {"current": 1, "size": 52},
+        "filter": {
+            "currently_on_sale": True,
+            "nifty_type_that_created": "1",
+            "contract_address": collection_page_address,
+        },
+        "sort": {"price_in_cents": "asc"},
+    }
+
+    listed_nft_req = APIRequest().get(
+        EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["all_minted_nifties"],
+        make_header(headers["content_type"], headers["app_x_encoded"]),
+        JSONUtil().dump_json(params_for_nft_collection),
+    )
+
+    print(listed_nft_req)
+
+
 def make_get_request_with_token(endpoint):
     req = APIRequest().get(
         EnvironmentVars.nfgwURL + Endpoint().get_endpoint()[endpoint],
@@ -192,3 +241,10 @@ def authentication_success_assertion_of_api(endpoint, key=None):
     req = JSONUtil().load_json(req.text)
     response_array = JSONUtil().get_value_list_by_node_name(key, req)
     return response_array
+
+
+def authentication_error_assertions_of_api(endpoint):
+    req = basic_get_req(EnvironmentVars.nfgwURL, Endpoint().get_endpoint()[endpoint])
+    req_data = JSONUtil().load_json(req.text)
+    assert req_data["detail"] == error_message_body
+    Assertions().check_unauthorized_response(req)

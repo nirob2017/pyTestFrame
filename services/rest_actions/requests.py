@@ -14,9 +14,13 @@ class Response:
 class APIRequest:
     """Utility for sending REST api requests."""
 
-    def get(self, url, headers=None):
+    def get(self, url, headers=None, params=None):
         """Get request method"""
-        response = requests.get(url, headers=headers)
+        response = requests.get(
+            url,
+            headers=headers,
+            params=params,
+        )
         return self.__get_responses(response)
 
     def post(self, url, payload=None, headers=None):

@@ -15,6 +15,9 @@ class Endpoint:
             "gemini_token": "user/is-gemini-token-valid/",
             "complete_purchase": "user/show-completed-purchases/?current=1&size=1",
             "curated_page": "drops/open/?dropType=curated&size=6&current=1",
+            "marketplace_page": "marketplace/nifty-types/",
+            "collection_page": "builder/get-storefront/",
+            "all_minted_nifties": "already_minted_nifties/",
         }
         if key is None:
             return endpoints
@@ -23,4 +26,10 @@ class Endpoint:
 
     def make_contract_address_endpoint(self, contract_address):
         endpoint = f"nifty/metadata-unminted/?contractAddress={contract_address}&niftyType=1&autoReload=false"
+        return endpoint
+
+    def make_collection_page_endpoint(self, contract_address):
+        endpoint = (
+            f"nifty/metadata-unminted/?contractAddress={contract_address}&niftyType=1"
+        )
         return endpoint
