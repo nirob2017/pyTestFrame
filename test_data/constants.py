@@ -29,5 +29,47 @@ headers = {
 }
 
 error_message_body = "Authentication credentials were not provided."
-token = " BfsWmeLRRsWksr04kTMNvVWri0NMwh"
+token = " JDH5unlmFdgVlptDt1uy9C7Gp24e9w"
 wallet_address = "0xc0f6080a153fb94b299bc103da13e8b29b59ba02"
+
+profile_data = {
+    "didSucceed": True,
+    "errorType": "none",
+    "message": "User profile located",
+    "userProfile": {
+        "account_balance_in_cents": 0,
+        "account_balance_holds_in_cents": 0,
+        "user_email": "ashiqur.rahman+001@gemini.com",
+        "name": "Nifty TestAccount",
+        "first_name": "Ash",
+        "last_name": "Rah",
+        "bio": "None",
+        "id": 1006455,
+        "profile_pic_url": "https://nftgimagebucket.s3-us-west-1.amazonaws.com/nifty_default_pic1.jpg",
+        "profile_url": "niftyautomationtestaccount",
+        "verified": False,
+        "userGUSDCashoutAddress": "none",
+        "userHasGUSDCashoutAddress": False,
+        "is_bid_safety_net_exempt": False,
+        "userCanCreateNiftyStores": False,
+        "twofa_enabled": False,
+        "verified_phone_number": False,
+        "country_code": "None",
+        "phone_number": "None",
+        "paymentPreference": "card",
+        "max_bid_allowance_override_in_cents": 0,
+        "needsTermsAndConditionsApproval": False,
+        "verifiedPurchaseEnabled": False,
+        "social_links": [],
+        "attached_addresses": [
+            {
+                "id": 4827183,
+                "uuid": "514c04f2-2382-4748-a1a0-282f070095a7",
+                "address": "0xc0f6080a153fb94b299bc103da13e8b29b59ba02",
+                "is_airdrop_default": True,
+                "can_sync": True,
+            }
+        ],
+        "paymentMethods": {"cards": {}},
+    },
+}

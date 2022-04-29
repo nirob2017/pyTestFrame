@@ -278,3 +278,16 @@ class JSONUtil:
         exists = self.is_node_exist(node_path)
         assert exists == True, "JSON Node : %s doesn't exits" % (node_path)
         return self
+
+    def find_values_from_json_using_key(self, key, json_data):
+        results = []
+
+        def _decode_dict(a_dict):
+            try:
+                results.append(a_dict[key])
+            except KeyError:
+                pass
+            return a_dict
+
+        json.loads(json_data, object_hook=_decode_dict)  # Return value ignored.
+        return results

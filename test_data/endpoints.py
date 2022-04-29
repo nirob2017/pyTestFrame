@@ -18,6 +18,10 @@ class Endpoint:
             "marketplace_page": "marketplace/nifty-types/",
             "collection_page": "builder/get-storefront/",
             "all_minted_nifties": "already_minted_nifties/",
+            "search": "https://host-vdgrw7.api.swiftype.com/api/as/v1/engines/nifty-projects/search",
+            "nifties_received": "user/show-nifties-received/",
+            "profile": "user/profile/",
+            "marketplace_project": "marketplace/projects/",
         }
         if key is None:
             return endpoints

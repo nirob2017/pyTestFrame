@@ -1,5 +1,4 @@
 import pytest
-
 from conftest import EnvironmentVars
 from factory.handle_json import JSONUtil
 from factory.handle_process import make_header, basic_get_req
@@ -10,6 +9,7 @@ from test_data.constants import (
     error_message_body,
     token,
     wallet_address,
+    profile_data,
 )
 from test_data.endpoints import Endpoint
 
@@ -218,6 +218,82 @@ def test_select_nft_from_marketplace():
     )
 
     print(listed_nft_req)
+
+
+def test_show_received_nft():
+    payload = {"current": 1, "size": 10}
+    received_nft_req = APIRequest().post(
+        EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["nifties_received"],
+        payload,
+        make_header(headers["authentication"], headers["bearer"] + token),
+    )
+    Assertions().check_success_status(received_nft_req)
+
+    # Processing Json Response
+    process_nft_res = JSONUtil().load_json(received_nft_req.text)
+
+    # Retrieving first NFT name from json data
+    data = JSONUtil().find_values_from_json_using_key("name", received_nft_req.text)
+    assert data[0] == "Crystal Pop #3651"
+
+
+def test_user_profile():
+    profile_req = APIRequest().get(
+        EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["profile"],
+        make_header(headers["authentication"], headers["bearer"] + token),
+    )
+    Assertions().check_success_status(profile_req)
+
+    assert JSONUtil().load_json(profile_req.text) == profile_data
+
+
+def test_select_curated_nft_from_marketplace():
+    """
+    Test for visiting marketplace page, then collection page, after that selecting and NFT &
+    making a purchase of an NFT using bearer token
+    """
+
+    params = 'page={"current":1,"size":1}&filter={"listing_type":"curated"}'
+
+    market_page_curated_req = APIRequest().get(
+        EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["marketplace_project"],
+        make_header(headers["content_type"], headers["app_x_encoded"]),
+        params,
+    )
+
+    # Processing Json Response
+    result = JSONUtil().load_json(market_page_curated_req.text)
+
+    # Retrieving collection page address from json data
+    store_contract_address = JSONUtil().find_values_from_json_using_key(
+        "contractAddress", market_page_curated_req.text
+    )
+    print(store_contract_address)
+
+    store_params = (
+        'page={"current":1,"size":52}&filter={"listing_type":[],'
+        '"contractAddress":"0x38cb271642fbd19a2592a15504420b1a78288a62"} '
+    )
+
+    # Visiting NFT store collection page
+    collection_page_req = APIRequest().get(
+        EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["marketplace_page"],
+        make_header(headers["content_type"], headers["app_x_encoded"]),
+        store_params,
+    )
+    Assertions().check_success_status(collection_page_req)
+
+    # Finding first NFT contract address
+    nft_contract_address = JSONUtil().find_values_from_json_using_key(
+        "niftyContractAddress", collection_page_req.text
+    )
+
+    # Visiting first NFT page
+    store_page_req = basic_get_req(
+        EnvironmentVars.nfgwURL,
+        Endpoint().make_collection_page_endpoint(nft_contract_address[0]),
+    )
+    Assertions().check_success_status(store_page_req)
 
 
 def make_get_request_with_token(endpoint):
