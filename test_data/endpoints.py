@@ -25,6 +25,7 @@ class Endpoint:
             "popular_nft": "market/ranked-stats/",
             "recent_activity": "market/all-data/",
             "term_condition": "user/accept-terms-and-conditions/",
+            "users": "v2/users/",
         }
         if key is None:
             return endpoints

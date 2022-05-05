@@ -29,7 +29,7 @@ headers = {
 }
 
 error_message_body = "Authentication credentials were not provided."
-token = " OrMTNUUbf3sAmJCdpfuOdCANyxsDGt"
+token = " qOfMGaWPImg81WyptgDBtVK4r8dDnX"
 wallet_address = "0xc0f6080a153fb94b299bc103da13e8b29b59ba02"
 
 profile_data = {

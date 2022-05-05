@@ -385,6 +385,30 @@ def test_recent_activity():
     Assertions().check_success_status(nft_page_req)
 
 
+def test_an_user_profile_url():
+    """
+    Test for hitting user url & asserting username, wallet address
+    """
+
+    user_url_req = APIRequest().get(
+        EnvironmentVars.nfgwURL
+        + Endpoint().get_endpoint("users")
+        + profile_data["userProfile"]["profile_url"],
+        make_header(headers["content_type"], headers["app_x_encoded"]),
+    )
+    Assertions().check_success_status(user_url_req)
+
+    # Finding username from json response
+    user_name = JSONUtil().find_values_from_json_using_key("name", user_url_req.text)
+    assert profile_data["userProfile"]["name"] == user_name[0]
+
+    # Finding wallet address from json response
+    user_wallet_address = JSONUtil().find_values_from_json_using_key(
+        "walletAddress", user_url_req.text
+    )
+    assert wallet_address == user_wallet_address[0]
+
+
 def make_get_request_with_token(endpoint):
     req = APIRequest().get(
         EnvironmentVars.nfgwURL + Endpoint().get_endpoint()[endpoint],
