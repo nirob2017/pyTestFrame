@@ -9,6 +9,7 @@ class Response:
     text: str
     as_dict: object
     headers: dict
+    url: str
 
 
 class APIRequest:
@@ -46,6 +47,7 @@ class APIRequest:
     def __get_responses(self, response):
         status_code = response.status_code
         text = response.text
+        url = response.url
 
         try:
             as_dict = response.json()
@@ -54,4 +56,4 @@ class APIRequest:
 
         headers = response.headers
 
-        return Response(status_code, text, as_dict, headers)
+        return Response(status_code, text, as_dict, headers, url)

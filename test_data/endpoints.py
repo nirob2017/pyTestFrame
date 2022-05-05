@@ -22,6 +22,9 @@ class Endpoint:
             "nifties_received": "user/show-nifties-received/",
             "profile": "user/profile/",
             "marketplace_project": "marketplace/projects/",
+            "popular_nft": "market/ranked-stats/",
+            "recent_activity": "market/all-data/",
+            "term_condition": "user/accept-terms-and-conditions/",
         }
         if key is None:
             return endpoints
@@ -36,4 +39,10 @@ class Endpoint:
         endpoint = (
             f"nifty/metadata-unminted/?contractAddress={contract_address}&niftyType=1"
         )
+        return endpoint
+
+    def make_marketplace_page_endpoint_contract_address_and_tokenid(
+        self, contract_address, token_id
+    ):
+        endpoint = f"nifty/metadata-minted/?contractAddress={contract_address}&tokenId={token_id}"
         return endpoint

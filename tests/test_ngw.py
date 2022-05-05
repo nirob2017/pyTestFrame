@@ -10,6 +10,7 @@ from test_data.constants import (
     token,
     wallet_address,
     profile_data,
+    most_popular_nft,
 )
 from test_data.endpoints import Endpoint
 
@@ -168,7 +169,16 @@ def test_purchase_curated_nft_with_login():
     purchase_response = make_get_request_with_token("complete_purchase")
     Assertions().check_success_status(purchase_response)
 
+    # Checking Terms and condition API
+    accept_term_and_condition = APIRequest().post(
+        EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["term_condition"],
+        "",
+        make_header(headers["authentication"], headers["bearer"] + token),
+    )
+    Assertions().check_success_status(accept_term_and_condition)
 
+
+@pytest.mark.skip()
 def test_select_nft_from_marketplace():
     """
     Test for visiting marketplace page, then collection page, after that selecting and NFT &
@@ -294,6 +304,85 @@ def test_select_curated_nft_from_marketplace():
         Endpoint().make_collection_page_endpoint(nft_contract_address[0]),
     )
     Assertions().check_success_status(store_page_req)
+
+
+def test_most_popular_nft():
+    """
+    Test for hitting most popular NFTs endpoint, then selecting an NFT & asserting it
+    """
+
+    param = {
+        "size": 2,
+        "current": 1,
+        "ranking_type": "number_of_sm_sales",
+        "order_by": "asc",
+    }
+
+    most_popular_nft_req = APIRequest().get(
+        EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["popular_nft"],
+        make_header(headers["content_type"], headers["app_x_encoded"]),
+        param,
+    )
+    Assertions().check_success_status(most_popular_nft_req)
+
+    # Finding all contract address from json response
+    nft_contract_address = JSONUtil().find_values_from_json_using_key(
+        "contractAddress", most_popular_nft_req.text
+    )
+
+    # Visiting first popular nft page using contract address
+    popular_nft_page_req = APIRequest().get(
+        EnvironmentVars.nfgwURL
+        + Endpoint().make_contract_address_endpoint(nft_contract_address[0]),
+        make_header(headers["content_type"], headers["app_x_encoded"]),
+    )
+    Assertions().check_success_status(popular_nft_page_req)
+
+    # Finding NFT title from json response
+    nft_title = JSONUtil().find_values_from_json_using_key(
+        "niftyTitle", popular_nft_page_req.text
+    )
+    assert nft_title[0] == most_popular_nft
+
+
+def test_recent_activity():
+    """
+    Test for hitting recent activity endpoint, then selecting first activity & asserting it
+    """
+
+    param = {
+        "size": 20,
+        "current": 1,
+        "order_by": "asc",
+        "onlySales": True,
+        "includeProfiles": False,
+    }
+    recent_activity_req = APIRequest().get(
+        EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["recent_activity"],
+        make_header(headers["content_type"], headers["app_x_encoded"]),
+        param,
+    )
+    Assertions().check_success_status(recent_activity_req)
+
+    # Finding all contract address from json response
+    nft_contract_address = JSONUtil().find_values_from_json_using_key(
+        "contractAddress", recent_activity_req.text
+    )
+
+    # Finding all token id from json response
+    token_id = JSONUtil().find_values_from_json_using_key(
+        "tokenId", recent_activity_req.text
+    )
+
+    # Visiting NFT page using contract address & token id
+    nft_page_req = APIRequest().get(
+        EnvironmentVars.nfgwURL
+        + Endpoint().make_marketplace_page_endpoint_contract_address_and_tokenid(
+            nft_contract_address[0], token_id[0]
+        ),
+        make_header(headers["content_type"], headers["app_x_encoded"]),
+    )
+    Assertions().check_success_status(nft_page_req)
 
 
 def make_get_request_with_token(endpoint):

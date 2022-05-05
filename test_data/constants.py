@@ -29,7 +29,7 @@ headers = {
 }
 
 error_message_body = "Authentication credentials were not provided."
-token = " JDH5unlmFdgVlptDt1uy9C7Gp24e9w"
+token = " OrMTNUUbf3sAmJCdpfuOdCANyxsDGt"
 wallet_address = "0xc0f6080a153fb94b299bc103da13e8b29b59ba02"
 
 profile_data = {
@@ -59,6 +59,7 @@ profile_data = {
         "paymentPreference": "card",
         "max_bid_allowance_override_in_cents": 0,
         "needsTermsAndConditionsApproval": False,
+        "user_id": 1009986,
         "verifiedPurchaseEnabled": False,
         "social_links": [],
         "attached_addresses": [
@@ -73,3 +74,5 @@ profile_data = {
         "paymentMethods": {"cards": {}},
     },
 }
+
+most_popular_nft = "FACES"
