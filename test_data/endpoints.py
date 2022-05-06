@@ -26,6 +26,12 @@ class Endpoint:
             "recent_activity": "market/all-data/",
             "term_condition": "user/accept-terms-and-conditions/",
             "users": "v2/users/",
+            "user_verification": "user/verification/",
+            "user_update": "user/v2/alter-user-profile/",
+            "seller_info": "connect/stripe/info/",
+            "email_notification": "user/email/getPreferences/",
+            "change_email_notification": "user/email/changePreferences/",
+            "price_alert": "user/niftyupdate/get-preferences/",
         }
         if key is None:
             return endpoints

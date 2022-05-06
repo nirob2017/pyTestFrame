@@ -1,17 +1,10 @@
 import pytest
 from conftest import EnvironmentVars
 from factory.handle_json import JSONUtil
-from factory.handle_process import make_header, basic_get_req
+from factory.handle_process import make_header, basic_get_req, header_with_bearer_token
 from services.assertions.asserts import Assertions
 from services.rest_actions.requests import APIRequest
-from test_data.constants import (
-    headers,
-    error_message_body,
-    token,
-    wallet_address,
-    profile_data,
-    most_popular_nft,
-)
+from test_data.constants import Constants
 from test_data.endpoints import Endpoint
 
 
@@ -27,7 +20,9 @@ def test_login_with_two_fa():
     req = APIRequest().post(
         EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["login_pass"],
         data,
-        make_header(headers["content_type"], headers["app_x_encoded"]),
+        make_header(
+            Constants().headers["content_type"], Constants().headers["app_x_encoded"]
+        ),
     )
 
 
@@ -42,7 +37,9 @@ def test_login_with_refresh_token():
     req = APIRequest().post(
         EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["login_pass"],
         data,
-        make_header(headers["content_type"], headers["app_x_encoded"]),
+        make_header(
+            Constants().headers["content_type"], Constants().headers["app_x_encoded"]
+        ),
     )
     Assertions().check_success_status(req)
     print(req.text)
@@ -148,7 +145,7 @@ def test_purchase_curated_nft_with_login():
     wallet_address_from_response = authentication_success_assertion_of_api(
         "wallets", "address"
     )
-    assert wallet_address_from_response[0] == wallet_address
+    assert wallet_address_from_response[0] == Constants().wallet_address
     authentication_success_assertion_of_api("stripe_list_card", "data")
 
     # Checking ethereum wallet
@@ -173,7 +170,7 @@ def test_purchase_curated_nft_with_login():
     accept_term_and_condition = APIRequest().post(
         EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["term_condition"],
         "",
-        make_header(headers["authentication"], headers["bearer"] + token),
+        header_with_bearer_token(),
     )
     Assertions().check_success_status(accept_term_and_condition)
 
@@ -192,7 +189,9 @@ def test_select_nft_from_marketplace():
 
     market_page_req = APIRequest().get(
         EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["marketplace_page"],
-        make_header(headers["content_type"], headers["app_x_encoded"]),
+        make_header(
+            Constants().headers["content_type"], Constants().headers["app_x_encoded"]
+        ),
         JSONUtil().dump_json(params),
     )
 
@@ -223,7 +222,9 @@ def test_select_nft_from_marketplace():
 
     listed_nft_req = APIRequest().get(
         EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["all_minted_nifties"],
-        make_header(headers["content_type"], headers["app_x_encoded"]),
+        make_header(
+            Constants().headers["content_type"], Constants().headers["app_x_encoded"]
+        ),
         JSONUtil().dump_json(params_for_nft_collection),
     )
 
@@ -235,7 +236,7 @@ def test_show_received_nft():
     received_nft_req = APIRequest().post(
         EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["nifties_received"],
         payload,
-        make_header(headers["authentication"], headers["bearer"] + token),
+        header_with_bearer_token(),
     )
     Assertions().check_success_status(received_nft_req)
 
@@ -250,11 +251,11 @@ def test_show_received_nft():
 def test_user_profile():
     profile_req = APIRequest().get(
         EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["profile"],
-        make_header(headers["authentication"], headers["bearer"] + token),
+        header_with_bearer_token(),
     )
     Assertions().check_success_status(profile_req)
 
-    assert JSONUtil().load_json(profile_req.text) == profile_data
+    assert JSONUtil().load_json(profile_req.text) == Constants().profile_data
 
 
 def test_select_curated_nft_from_marketplace():
@@ -267,7 +268,9 @@ def test_select_curated_nft_from_marketplace():
 
     market_page_curated_req = APIRequest().get(
         EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["marketplace_project"],
-        make_header(headers["content_type"], headers["app_x_encoded"]),
+        make_header(
+            Constants().headers["content_type"], Constants().headers["app_x_encoded"]
+        ),
         params,
     )
 
@@ -288,7 +291,9 @@ def test_select_curated_nft_from_marketplace():
     # Visiting NFT store collection page
     collection_page_req = APIRequest().get(
         EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["marketplace_page"],
-        make_header(headers["content_type"], headers["app_x_encoded"]),
+        make_header(
+            Constants().headers["content_type"], Constants().headers["app_x_encoded"]
+        ),
         store_params,
     )
     Assertions().check_success_status(collection_page_req)
@@ -320,21 +325,25 @@ def test_most_popular_nft():
 
     most_popular_nft_req = APIRequest().get(
         EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["popular_nft"],
-        make_header(headers["content_type"], headers["app_x_encoded"]),
+        make_header(
+            Constants().headers["content_type"], Constants().headers["app_x_encoded"]
+        ),
         param,
     )
     Assertions().check_success_status(most_popular_nft_req)
 
     # Finding all contract address from json response
     nft_contract_address = JSONUtil().find_values_from_json_using_key(
-        "contractAddress", most_popular_nft_req.text
+        "niftyContractAddress", most_popular_nft_req.text
     )
 
     # Visiting first popular nft page using contract address
     popular_nft_page_req = APIRequest().get(
         EnvironmentVars.nfgwURL
         + Endpoint().make_contract_address_endpoint(nft_contract_address[0]),
-        make_header(headers["content_type"], headers["app_x_encoded"]),
+        make_header(
+            Constants().headers["content_type"], Constants().headers["app_x_encoded"]
+        ),
     )
     Assertions().check_success_status(popular_nft_page_req)
 
@@ -342,7 +351,7 @@ def test_most_popular_nft():
     nft_title = JSONUtil().find_values_from_json_using_key(
         "niftyTitle", popular_nft_page_req.text
     )
-    assert nft_title[0] == most_popular_nft
+    assert nft_title[0] == Constants().most_popular_nft
 
 
 def test_recent_activity():
@@ -359,7 +368,9 @@ def test_recent_activity():
     }
     recent_activity_req = APIRequest().get(
         EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["recent_activity"],
-        make_header(headers["content_type"], headers["app_x_encoded"]),
+        make_header(
+            Constants().headers["content_type"], Constants().headers["app_x_encoded"]
+        ),
         param,
     )
     Assertions().check_success_status(recent_activity_req)
@@ -380,7 +391,9 @@ def test_recent_activity():
         + Endpoint().make_marketplace_page_endpoint_contract_address_and_tokenid(
             nft_contract_address[0], token_id[0]
         ),
-        make_header(headers["content_type"], headers["app_x_encoded"]),
+        make_header(
+            Constants().headers["content_type"], Constants().headers["app_x_encoded"]
+        ),
     )
     Assertions().check_success_status(nft_page_req)
 
@@ -393,26 +406,28 @@ def test_an_user_profile_url():
     user_url_req = APIRequest().get(
         EnvironmentVars.nfgwURL
         + Endpoint().get_endpoint("users")
-        + profile_data["userProfile"]["profile_url"],
-        make_header(headers["content_type"], headers["app_x_encoded"]),
+        + Constants().profile_data["userProfile"]["profile_url"],
+        make_header(
+            Constants().headers["content_type"], Constants().headers["app_x_encoded"]
+        ),
     )
     Assertions().check_success_status(user_url_req)
 
     # Finding username from json response
     user_name = JSONUtil().find_values_from_json_using_key("name", user_url_req.text)
-    assert profile_data["userProfile"]["name"] == user_name[0]
+    assert Constants().profile_data["userProfile"]["name"] == user_name[0]
 
     # Finding wallet address from json response
     user_wallet_address = JSONUtil().find_values_from_json_using_key(
         "walletAddress", user_url_req.text
     )
-    assert wallet_address == user_wallet_address[0]
+    assert Constants().wallet_address == user_wallet_address[0]
 
 
 def make_get_request_with_token(endpoint):
     req = APIRequest().get(
         EnvironmentVars.nfgwURL + Endpoint().get_endpoint()[endpoint],
-        make_header(headers["authentication"], headers["bearer"] + token),
+        header_with_bearer_token(),
     )
     return req
 
@@ -420,7 +435,7 @@ def make_get_request_with_token(endpoint):
 def authentication_success_assertion_of_api(endpoint, key=None):
     req = APIRequest().get(
         EnvironmentVars.nfgwURL + Endpoint().get_endpoint()[endpoint],
-        make_header(headers["authentication"], headers["bearer"] + token),
+        header_with_bearer_token(),
     )
 
     # Asserting response status code
@@ -435,5 +450,5 @@ def authentication_success_assertion_of_api(endpoint, key=None):
 def authentication_error_assertions_of_api(endpoint):
     req = basic_get_req(EnvironmentVars.nfgwURL, Endpoint().get_endpoint()[endpoint])
     req_data = JSONUtil().load_json(req.text)
-    assert req_data["detail"] == error_message_body
+    assert req_data["detail"] == Constants().error_message_body
     Assertions().check_unauthorized_response(req)

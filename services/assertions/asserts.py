@@ -26,3 +26,10 @@ class Assertions:
     def check_response(response, key=None, value=None):
         req = JSONUtil.load_json(response.text)
         assert req[key] == value
+
+    @staticmethod
+    def assert_response_with_expected_result(
+        response, response_key=None, expected_data=None
+    ):
+        resp = JSONUtil().find_values_from_json_using_key(response_key, response.text)
+        assert expected_data == resp[0]

@@ -1,7 +1,7 @@
 import os
 import json
 
-from test_data.constants import headers
+from test_data.constants import Constants
 
 
 class JSONUtil:
@@ -58,7 +58,9 @@ class JSONUtil:
         """
         if isinstance(json_to_load, bytes):
             try:
-                json_string = json.loads(json_to_load.decode(headers["Accept-Charset"]))
+                json_string = json.loads(
+                    json_to_load.decode(Constants().headers["Accept-Charset"])
+                )
             except UnicodeDecodeError:
                 json_string = json.loads(json_to_load.decode())
         else:

@@ -8,7 +8,7 @@ from conftest import EnvironmentVars
 load_dotenv()
 
 
-def make_payload():
+def make_email_payload():
     data = json.loads(
         '{"email":' + EnvironmentVars.Email + ',"password": "' + random_digits(5) + '"}'
     )
