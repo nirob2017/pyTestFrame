@@ -1,5 +1,3 @@
-import json
-
 from conftest import EnvironmentVars
 from factory.handle_json import JSONUtil
 from services.rest_actions.requests import APIRequest

@@ -32,6 +32,15 @@ class Endpoint:
             "email_notification": "user/email/getPreferences/",
             "change_email_notification": "user/email/changePreferences/",
             "price_alert": "user/niftyupdate/get-preferences/",
+            "security": "user/twofa/check/",
+            "approvals": "user/wallet/eth-contract-approvals/",
+            "seller_settings_authorization": "connect/stripe/onboarding-link/",
+            "show_received_bids": "user/show-received-bids/",
+            "show_placed_bids": "user/show-placed-bids/",
+            "show_completed_purchase": "user/show-completed-purchases/",
+            "show_successful_sales": "user/show-successful-sales/",
+            "all_displays_for_users": "tv/get-all-displays-for-user/",
+            "display_nifties": "tv/get-all-display-nifties/",
         }
         if key is None:
             return endpoints

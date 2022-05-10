@@ -32,7 +32,7 @@ class Constants:
     }
 
     error_message_body = "Authentication credentials were not provided."
-    token = " wemue6wXJwKXqJizCZ2daswqPiKhQo"
+    token = " L4EwfNJFXSbUHKAdujkYEHFeJuSoZ4"
     wallet_address = "0xc0f6080a153fb94b299bc103da13e8b29b59ba02"
 
     profile_data = {
@@ -79,7 +79,7 @@ class Constants:
     }
 
     most_popular_nft = "FACES"
-    stripe_account_id = "acct_1KwLFqQoC6a2gto1"
+    stripe_account_id = "acct_1KxpThR1iodvVx9u"
     notification_options = {
         "purchaseSuccessful": True,
         "purchaseInitiated": True,
@@ -107,3 +107,19 @@ class Constants:
 
     uncheck_all_payload_data = {"field": "uncheckAll", "pref": False}
     check_all_payload_data = {"field": "checkAll", "pref": True}
+
+    approvals = {"count": 0, "next": None, "previous": None, "results": []}
+
+    bids_purchase_sales_response = {
+        "errorType": "none",
+        "message": "none",
+        "data": {
+            "meta": {
+                "page": {"total_results": 0, "total_pages": 1, "current": 1, "size": 10}
+            },
+            "results": [],
+        },
+        "didSucceed": True,
+    }
+
+    nifty_project_name = "Crystal Pops 10K"
