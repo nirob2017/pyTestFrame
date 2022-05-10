@@ -9,32 +9,45 @@ class Response:
     text: str
     as_dict: object
     headers: dict
+    url: str
 
 
 class APIRequest:
-    def get(self, url):
-        response = requests.get(url)
+    """Utility for sending REST api requests."""
+
+    def get(self, url, headers=None, params=None):
+        """Get request method"""
+        response = requests.get(
+            url,
+            headers=headers,
+            params=params,
+        )
         return self.__get_responses(response)
 
     def post(self, url, payload=None, headers=None):
+        """Post request method. when passing json payload, pass json.dumps(payload)"""
         response = requests.post(url, data=payload, headers=headers)
         return self.__get_responses(response)
 
     def put(self, url, payload=None, headers=None):
+        """Put request method."""
         response = requests.put(url, data=payload, headers=headers)
         return self.__get_responses(response)
 
     def patch(self, url, payload=None, headers=None):
+        """Patch method"""
         response = requests.patch(url, data=payload, headers=headers)
         return self.__get_responses(response)
 
     def delete(self, url):
+        """Delete method."""
         response = requests.delete(url)
         return self.__get_responses(response)
 
     def __get_responses(self, response):
         status_code = response.status_code
         text = response.text
+        url = response.url
 
         try:
             as_dict = response.json()
@@ -43,4 +56,4 @@ class APIRequest:
 
         headers = response.headers
 
-        return Response(status_code, text, as_dict, headers)
+        return Response(status_code, text, as_dict, headers, url)

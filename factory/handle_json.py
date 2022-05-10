@@ -1,7 +1,7 @@
 import os
 import json
 
-from test_data.constants import headers
+from test_data.constants import Constants
 
 
 class JSONUtil:
@@ -58,7 +58,9 @@ class JSONUtil:
         """
         if isinstance(json_to_load, bytes):
             try:
-                json_string = json.loads(json_to_load.decode(headers["Accept-Charset"]))
+                json_string = json.loads(
+                    json_to_load.decode(Constants().headers["Accept-Charset"])
+                )
             except UnicodeDecodeError:
                 json_string = json.loads(json_to_load.decode())
         else:
@@ -278,3 +280,16 @@ class JSONUtil:
         exists = self.is_node_exist(node_path)
         assert exists == True, "JSON Node : %s doesn't exits" % (node_path)
         return self
+
+    def find_values_from_json_using_key(self, key, json_data):
+        results = []
+
+        def _decode_dict(a_dict):
+            try:
+                results.append(a_dict[key])
+            except KeyError:
+                pass
+            return a_dict
+
+        json.loads(json_data, object_hook=_decode_dict)  # Return value ignored.
+        return results

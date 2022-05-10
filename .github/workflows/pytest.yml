@@ -35,5 +35,9 @@ jobs:
           PASS:  ${{ secrets.PASS }}
           Base_Url:  ${{ secrets.BASE_URL }}
           Xml_Url:  ${{ secrets.XML_URL }}
+          NFGW_URL: ${{ secrets.NFGW_URL }}
+          NFGW_USER: ${{ secrets.NFGW_USER }}
+          NFGW_PASS: ${{ secrets.NFGW_PASS }}
+          CLIENT_ID: ${{ secrets.CLIENT_ID}}
         run: |
           pipenv run pytest . -s -v --md-report

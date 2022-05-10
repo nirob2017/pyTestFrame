@@ -13,7 +13,7 @@ from factory.handle_xml import XMLUtil
 from services.assertions.asserts import Assertions
 from factory.handle_json import JSONUtil
 from services.rest_actions.requests import APIRequest
-from test_data.constants import headers, user_janet
+from test_data.constants import Constants
 from test_data.endpoints import Endpoint
 
 
@@ -41,10 +41,10 @@ def test_read_all_has_Janet():
     """
     req = basic_get_req(EnvironmentVars.BaseURL, Endpoint().get_endpoint()["user"])
     Assertions().check_success_status(req)
-    Assertions().check_response(req, "data", user_janet[0]["data"])
+    Assertions().check_response(req, "data", Constants().user_janet[0]["data"])
     data = JSONUtil.load_json(req.text)
-    assert data == user_janet[0]
-    assert data["data"]["first_name"] == user_janet[0]["data"]["first_name"]
+    assert data == Constants().user_janet[0]
+    assert data["data"]["first_name"] == Constants().user_janet[0]["data"]["first_name"]
     assert jsonpath.jsonpath(data, "$.data.first_name")[0] == "Janet"
     assert jsonpath.jsonpath(data, "$.data.id")[0] == 2
 
@@ -57,12 +57,14 @@ def test_unsuccessfull_login(invalid_user_data):
     req = APIRequest().post(
         makeUrl,
         make_json_data(invalid_user_data["emailText"], invalid_user_data["emailData"]),
-        make_header(headers["content_type"], headers["application_json"]),
+        make_header(
+            Constants().headers["content_type"], Constants().headers["application_json"]
+        ),
     )
     Assertions().check_bad_Request(req)
 
 
-@pytest.mark.parametrize("key, value", [("id", "761"), ("name", "Xim Cornel")])
+@pytest.mark.parametrize("key, value", [("id", "1181"), ("name", "Kala Khata12")])
 def test_xml_response(key, value):
     """
     Test on hitting GET API, for testing xml response
@@ -83,5 +85,5 @@ def test_xml_response(key, value):
         json_object["TravelerinformationResponse"]["travelers"]["Travelerinformation"][
             0
         ]["name"]
-        == "Xim Cornel"
+        == "Kala Khata12"
     )

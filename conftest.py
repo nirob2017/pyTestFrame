@@ -12,6 +12,10 @@ class EnvironmentVars:
     Password = os.getenv("PASS")
     BaseURL = os.getenv("Base_Url")
     XmlURL = os.getenv("Xml_Url")
+    nfgwURL = os.getenv("NFGW_URL")
+    clientID = os.getenv("CLIENT_ID")
+    nfgwPass = os.getenv("NFGW_PASS")
+    nfgwUser = os.getenv("NFGW_USER")
 
 
 @pytest.fixture
