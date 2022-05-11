@@ -32,7 +32,7 @@ class Constants:
     }
 
     error_message_body = "Authentication credentials were not provided."
-    token = " L4EwfNJFXSbUHKAdujkYEHFeJuSoZ4"
+    token = " MKUGtyfGDSUEck1iKm8uFwdHDupZPI"
     wallet_address = "0xc0f6080a153fb94b299bc103da13e8b29b59ba02"
 
     profile_data = {
@@ -123,3 +123,5 @@ class Constants:
     }
 
     nifty_project_name = "Crystal Pops 10K"
+
+    public_wallet_address = "0xe052113bd7d7700d623414a0a4585bcae754e9d5"

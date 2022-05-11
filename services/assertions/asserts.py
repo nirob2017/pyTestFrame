@@ -2,34 +2,30 @@ from factory.handle_json import JSONUtil
 
 
 class Assertions:
-    @staticmethod
-    def check_success_status(response):
+    def __init__(self):
+        super().__init__()
+
+    def check_success_status(self, response):
         assert response.status_code == 200
 
-    @staticmethod
-    def check_response_status_created(response):
+    def check_response_status_created(self, response):
         assert response.status_code == 201
 
-    @staticmethod
-    def check_bad_Request(response):
+    def check_bad_Request(self, response):
         assert response.status_code == 400
 
-    @staticmethod
-    def check_unauthorized_response(response):
+    def check_unauthorized_response(self, response):
         assert response.status_code == 401
 
-    @staticmethod
-    def check_internal_server_error_response(response):
+    def check_internal_server_error_response(self, response):
         assert response.status_code == 500
 
-    @staticmethod
-    def check_response(response, key=None, value=None):
+    def check_response(self, response, key=None, value=None):
         req = JSONUtil.load_json(response.text)
         assert req[key] == value
 
-    @staticmethod
     def assert_response_with_expected_result(
-        response, response_key=None, expected_data=None
+        self, response, response_key=None, expected_data=None, index=0
     ):
         resp = JSONUtil().find_values_from_json_using_key(response_key, response.text)
-        assert expected_data == resp[0]
+        assert expected_data == resp[index]

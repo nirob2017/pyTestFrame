@@ -231,23 +231,6 @@ def test_select_nft_from_marketplace():
     print(listed_nft_req)
 
 
-def test_show_received_nft():
-    payload = {"current": 1, "size": 10}
-    received_nft_req = APIRequest().post(
-        EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["nifties_received"],
-        payload,
-        header_with_bearer_token(),
-    )
-    Assertions().check_success_status(received_nft_req)
-
-    # Processing Json Response
-    process_nft_res = JSONUtil().load_json(received_nft_req.text)
-
-    # Retrieving first NFT name from json data
-    data = JSONUtil().find_values_from_json_using_key("name", received_nft_req.text)
-    assert data[0] == "Crystal Pop #3651"
-
-
 def test_user_profile():
     profile_req = APIRequest().get(
         EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["profile"],

@@ -20,6 +20,9 @@ class Endpoint:
             "all_minted_nifties": "already_minted_nifties/",
             "search": "https://host-vdgrw7.api.swiftype.com/api/as/v1/engines/nifty-projects/search",
             "nifties_received": "user/show-nifties-received/",
+            "nifties_sent": "user/show-nifties-sent/",
+            "nifties_deposits": "user/show-deposits/",
+            "nifties_withdrawals": "user/show-withdrawals/",
             "profile": "user/profile/",
             "marketplace_project": "marketplace/projects/",
             "popular_nft": "market/ranked-stats/",
@@ -41,6 +44,12 @@ class Endpoint:
             "show_successful_sales": "user/show-successful-sales/",
             "all_displays_for_users": "tv/get-all-displays-for-user/",
             "display_nifties": "tv/get-all-display-nifties/",
+            "redeem": "redeemable-projects/",
+            "redeemable_nifties": "redeemable-projects/nifties/",
+            "deposit_nifties": "user/get-deposit-address/",
+            "profile_and_nifties": "user/profile-and-nifties/",
+            "twofa_preferences": "user/twofa/preferences/",
+            "user_nft_search": "v2/users/niftyautomationtestaccount/nifties/",
         }
         if key is None:
             return endpoints

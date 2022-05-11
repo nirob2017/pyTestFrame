@@ -11,13 +11,10 @@ from test_data.endpoints import Endpoint
 
 
 def test_user_verification():
-    req = APIRequest().get(
-        EnvironmentVars.nfgwURL + Endpoint().get_endpoint("user_verification"),
-        header_with_bearer_token(),
-    )
+    resp = _auth_get_request_without_parameter("user_verification")
 
     # Asserting response status code
-    Assertions().check_success_status(req)
+    Assertions().check_success_status(resp)
 
 
 @pytest.mark.skip("Skipping it because we are testing on production env. now.")
@@ -41,15 +38,12 @@ def test_update_user_name(key, value):
 
 
 def test_user_seller_info():
-    req = APIRequest().get(
-        EnvironmentVars.nfgwURL + Endpoint().get_endpoint("seller_info"),
-        header_with_bearer_token(),
-    )
+    resp = _auth_get_request_without_parameter("seller_info")
 
     # Asserting response status code, response
-    Assertions().check_success_status(req)
+    Assertions().check_success_status(resp)
     Assertions().assert_response_with_expected_result(
-        req, "stripe_account_id", Constants().stripe_account_id
+        resp, "stripe_account_id", Constants().stripe_account_id
     )
 
 
@@ -70,40 +64,31 @@ def test_user_seller_settings_authorization():
 
 
 def test_user_email_notification():
-    req = APIRequest().get(
-        EnvironmentVars.nfgwURL + Endpoint().get_endpoint("email_notification"),
-        header_with_bearer_token(),
-    )
+    resp = _auth_get_request_without_parameter("email_notification")
 
     # Asserting response status code, response
-    Assertions().check_success_status(req)
+    Assertions().check_success_status(resp)
     Assertions().assert_response_with_expected_result(
-        req, "message", Constants().notification_options
+        resp, "message", Constants().notification_options
     )
 
-    _check_and_uncheck_email_notification(Constants().uncheck_all_payload_data, 200)
-    _check_and_uncheck_email_notification(Constants().check_all_payload_data, 200)
+    __check_and_uncheck_email_notification(Constants().uncheck_all_payload_data, 200)
+    __check_and_uncheck_email_notification(Constants().check_all_payload_data, 200)
 
 
 def test_user_price_alert():
-    req = APIRequest().get(
-        EnvironmentVars.nfgwURL + Endpoint().get_endpoint("price_alert"),
-        header_with_bearer_token(),
-    )
+    resp = _auth_get_request_without_parameter("price_alert")
 
     # Asserting response status code, response
-    Assertions().check_success_status(req)
+    Assertions().check_success_status(resp)
 
 
 def test_user_security_check():
-    req = APIRequest().get(
-        EnvironmentVars.nfgwURL + Endpoint().get_endpoint("security"),
-        header_with_bearer_token(),
-    )
+    resp = _auth_get_request_without_parameter("security")
 
     # Asserting response status code, response
-    Assertions().check_success_status(req)
-    Assertions().assert_response_with_expected_result(req, "enabled", False)
+    Assertions().check_success_status(resp)
+    Assertions().assert_response_with_expected_result(resp, "enabled", False)
 
 
 def test_user_my_account_approval_for_all():
@@ -147,13 +132,10 @@ def test_user_show_received_placed_bids_and_completed_purchase_sales(
 
 
 def test_user_displays_nifties():
-    req = APIRequest().get(
-        EnvironmentVars.nfgwURL + Endpoint().get_endpoint("all_displays_for_users"),
-        header_with_bearer_token(),
-    )
+    resp = _auth_get_request_without_parameter("all_displays_for_users")
 
     # Asserting response status code, response
-    Assertions().check_success_status(req)
+    Assertions().check_success_status(resp)
 
     display_nifty_req = APIRequest().get(
         EnvironmentVars.nfgwURL + Endpoint().get_endpoint("display_nifties"),
@@ -166,7 +148,119 @@ def test_user_displays_nifties():
     )
 
 
-def _check_and_uncheck_email_notification(data, response):
+def test_user_other_transactions():
+    def _sent_post_req(endpoint):
+        payload = {"current": 1, "size": 10}
+        req = APIRequest().post(
+            EnvironmentVars.nfgwURL + Endpoint().get_endpoint()[endpoint],
+            payload,
+            header_with_bearer_token(),
+        )
+        return req
+
+    # Received nifties
+    received_nft_req = _sent_post_req("nifties_received")
+    # Asserting response status code, response
+    Assertions().check_success_status(received_nft_req)
+    Assertions().assert_response_with_expected_result(
+        received_nft_req, "name", "Crystal Pop #3651"
+    )
+
+    # Sent nifties
+    received_nft_req = _sent_post_req("nifties_sent")
+    # Asserting response status code, response
+    Assertions().check_success_status(received_nft_req)
+
+    # Deposits nifties
+    received_nft_req = _sent_post_req("nifties_deposits")
+    # Asserting response status code, response
+    Assertions().check_success_status(received_nft_req)
+
+    # Withdrawals nifties
+    received_nft_req = _sent_post_req("nifties_withdrawals")
+    # Asserting response status code, response
+    Assertions().check_success_status(received_nft_req)
+    Assertions().assert_response_with_expected_result(
+        received_nft_req, "niftyName", "Crystal Pops"
+    )
+
+
+def test_user_deposit_address():
+    # Getting user's public deposit address
+    resp = _auth_get_request_without_parameter("deposit_nifties")
+
+    # Asserting response status code, response
+    Assertions().check_success_status(resp)
+    Assertions().assert_response_with_expected_result(
+        resp, "nifty_public_deposit_address", Constants().public_wallet_address
+    )
+
+
+def test_user_redeem_projects():
+    # User's redeemable projects
+    resp = _auth_get_request_without_parameter("redeem")
+
+    # Asserting response status code, response
+    Assertions().check_success_status(resp)
+    Assertions().assert_response_with_expected_result(
+        resp, "display_name", "Justin Roiland Open Edition"
+    )
+
+    # Redeeming project
+    payload_data = {"id": 3, "cancelToken": {"promise": {}}, "timeout": 30000}
+    req = APIRequest().post(
+        EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["redeemable_nifties"],
+        payload_data,
+        header_with_bearer_token(),
+    )
+    # Asserting response status code
+    Assertions().check_success_status(req)
+
+
+def test_user_profile_and_nifities_views():
+    # User's profile & nifties
+    resp = _auth_get_request_without_parameter("profile_and_nifties")
+
+    # Asserting response status code, response
+    Assertions().check_success_status(resp)
+    Assertions().assert_response_with_expected_result(resp, "first_name", "Ash")
+    Assertions().assert_response_with_expected_result(
+        resp, "project_name", "Crystal Pops 10K"
+    )
+
+    # User's profile view preferences
+    req = _auth_get_request_without_parameter("twofa_preferences")
+    # Asserting response status code, response
+    Assertions().check_success_status(resp)
+    Assertions().assert_response_with_expected_result(req, "ethereum_withdrawal", False)
+    Assertions().assert_response_with_expected_result(req, "login_one_touch", False)
+
+
+def test_search_user_nft():
+    param = {"page": 1, "page_size": 10, "search": 1678, "ordering": ""}
+
+    # Searching an NFT with keyword "1678"
+    req = APIRequest().get(
+        EnvironmentVars.nfgwURL + Endpoint().get_endpoint("user_nft_search"),
+        header_with_bearer_token(),
+        param,
+    )
+    # Asserting response status code, response
+    Assertions().check_success_status(req)
+    Assertions().assert_response_with_expected_result(
+        req, "name", "Crystal Pop #1678", 1
+    )
+
+
+def _auth_get_request_without_parameter(endpoint):
+    req = APIRequest().get(
+        EnvironmentVars.nfgwURL + Endpoint().get_endpoint(endpoint),
+        header_with_bearer_token(),
+    )
+    return req
+
+
+def __check_and_uncheck_email_notification(data, response):
     change_notification_req = APIRequest().post(
         EnvironmentVars.nfgwURL + Endpoint().get_endpoint("change_email_notification"),
         data,
