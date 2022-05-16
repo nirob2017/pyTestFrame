@@ -11,7 +11,7 @@ from test_data.endpoints import Endpoint
 
 
 def test_user_verification():
-    resp = _auth_get_request_without_parameter("user_verification")
+    resp = _auth_get_request("user_verification")
 
     # Asserting response status code
     Assertions().check_success_status(resp)
@@ -38,7 +38,7 @@ def test_update_user_name(key, value):
 
 
 def test_user_seller_info():
-    resp = _auth_get_request_without_parameter("seller_info")
+    resp = _auth_get_request("seller_info")
 
     # Asserting response status code, response
     Assertions().check_success_status(resp)
@@ -64,7 +64,7 @@ def test_user_seller_settings_authorization():
 
 
 def test_user_email_notification():
-    resp = _auth_get_request_without_parameter("email_notification")
+    resp = _auth_get_request("email_notification")
 
     # Asserting response status code, response
     Assertions().check_success_status(resp)
@@ -77,14 +77,14 @@ def test_user_email_notification():
 
 
 def test_user_price_alert():
-    resp = _auth_get_request_without_parameter("price_alert")
+    resp = _auth_get_request("price_alert")
 
     # Asserting response status code, response
     Assertions().check_success_status(resp)
 
 
 def test_user_security_check():
-    resp = _auth_get_request_without_parameter("security")
+    resp = _auth_get_request("security")
 
     # Asserting response status code, response
     Assertions().check_success_status(resp)
@@ -132,7 +132,7 @@ def test_user_show_received_placed_bids_and_completed_purchase_sales(
 
 
 def test_user_displays_nifties():
-    resp = _auth_get_request_without_parameter("all_displays_for_users")
+    resp = _auth_get_request("all_displays_for_users")
 
     # Asserting response status code, response
     Assertions().check_success_status(resp)
@@ -187,7 +187,7 @@ def test_user_other_transactions():
 
 def test_user_deposit_address():
     # Getting user's public deposit address
-    resp = _auth_get_request_without_parameter("deposit_nifties")
+    resp = _auth_get_request("deposit_nifties")
 
     # Asserting response status code, response
     Assertions().check_success_status(resp)
@@ -198,7 +198,7 @@ def test_user_deposit_address():
 
 def test_user_redeem_projects():
     # User's redeemable projects
-    resp = _auth_get_request_without_parameter("redeem")
+    resp = _auth_get_request("redeem")
 
     # Asserting response status code, response
     Assertions().check_success_status(resp)
@@ -219,7 +219,7 @@ def test_user_redeem_projects():
 
 def test_user_profile_and_nifities_views():
     # User's profile & nifties
-    resp = _auth_get_request_without_parameter("profile_and_nifties")
+    resp = _auth_get_request("profile_and_nifties")
 
     # Asserting response status code, response
     Assertions().check_success_status(resp)
@@ -229,7 +229,7 @@ def test_user_profile_and_nifities_views():
     )
 
     # User's profile view preferences
-    req = _auth_get_request_without_parameter("twofa_preferences")
+    req = _auth_get_request("twofa_preferences")
     # Asserting response status code, response
     Assertions().check_success_status(resp)
     Assertions().assert_response_with_expected_result(req, "ethereum_withdrawal", False)
@@ -252,10 +252,69 @@ def test_search_user_nft():
     )
 
 
-def _auth_get_request_without_parameter(endpoint):
+def test_user_external_nifties():
+    param = {
+        "page": 1,
+        "page_size": 72,
+        "walletAddress": Constants().wallet_address,
+        "canTrade": True,
+        "ordering": "",
+    }
+
+    # Users external NFTs list
+    req = APIRequest().get(
+        EnvironmentVars.nfgwURL + Endpoint().get_endpoint("user_external_nifties"),
+        header_with_bearer_token(),
+        param,
+    )
+    # Asserting response status code, response
+    Assertions().check_success_status(req)
+    Assertions().assert_response_with_expected_result(req, "tokenId", "100011547")
+
+
+def test_user_liked_collection_and_nfts():
+    param = {
+        "page": 1,
+        "page_size": 72,
+    }
+    # User's liked collection
+    collection_req = APIRequest().get(
+        EnvironmentVars.nfgwURL + Endpoint().get_endpoint("likes_collection"),
+        header_with_bearer_token(),
+        param,
+    )
+    # Asserting response status code, response
+    Assertions().check_success_status(collection_req)
+
+    # User's liked nfts
+    nft_req = _auth_get_request("likes_nfts", param)
+    # Asserting response status code, response
+    Assertions().check_success_status(nft_req)
+
+
+def test_user_w2w_activity():
+    param = {"page": 1, "page_size": 10, "status": "all"}
+    # User's wallet to wallet activities
+    nft_req = _auth_get_request("w2w_activity", param)
+    # Asserting response status code, response
+    Assertions().check_success_status(nft_req)
+
+
+def test_user_profile():
+    profile_req = APIRequest().get(
+        EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["profile"],
+        header_with_bearer_token(),
+    )
+    Assertions().check_success_status(profile_req)
+
+    assert JSONUtil().load_json(profile_req.text) == Constants().profile_data
+
+
+def _auth_get_request(endpoint, param=None):
     req = APIRequest().get(
         EnvironmentVars.nfgwURL + Endpoint().get_endpoint(endpoint),
         header_with_bearer_token(),
+        params=param,
     )
     return req
 

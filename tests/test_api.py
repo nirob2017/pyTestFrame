@@ -64,7 +64,9 @@ def test_unsuccessfull_login(invalid_user_data):
     Assertions().check_bad_Request(req)
 
 
-@pytest.mark.parametrize("key, value", [("id", "1181"), ("name", "Kala Khata12")])
+@pytest.mark.parametrize(
+    "key, value", [("id", "1189"), ("name", "Princess David William")]
+)
 def test_xml_response(key, value):
     """
     Test on hitting GET API, for testing xml response
@@ -85,5 +87,5 @@ def test_xml_response(key, value):
         json_object["TravelerinformationResponse"]["travelers"]["Travelerinformation"][
             0
         ]["name"]
-        == "Kala Khata12"
+        == "Princess David William"
     )

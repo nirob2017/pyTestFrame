@@ -50,6 +50,14 @@ class Endpoint:
             "profile_and_nifties": "user/profile-and-nifties/",
             "twofa_preferences": "user/twofa/preferences/",
             "user_nft_search": "v2/users/niftyautomationtestaccount/nifties/",
+            "user_external_nifties": "v2/users/niftyautomationtestaccount/external-nifties/",
+            "likes_collection": "v2/users/niftyautomationtestaccount/boards/favorites/collections/",
+            "likes_nfts": "v2/users/niftyautomationtestaccount/boards/favorites/nifties/",
+            "w2w_activity": "payments/historical",
+            "past_drops": "market/all-collection-market-stats/",
+            "drop_schedule": "drops/schedule/",
+            "recent_drops": "home/featured/",
+            "live_auctions": "auctions/live/",
         }
         if key is None:
             return endpoints

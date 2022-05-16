@@ -231,16 +231,6 @@ def test_select_nft_from_marketplace():
     print(listed_nft_req)
 
 
-def test_user_profile():
-    profile_req = APIRequest().get(
-        EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["profile"],
-        header_with_bearer_token(),
-    )
-    Assertions().check_success_status(profile_req)
-
-    assert JSONUtil().load_json(profile_req.text) == Constants().profile_data
-
-
 def test_select_curated_nft_from_marketplace():
     """
     Test for visiting marketplace page, then collection page, after that selecting and NFT &
