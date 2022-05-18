@@ -32,7 +32,7 @@ class Constants:
     }
 
     error_message_body = "Authentication credentials were not provided."
-    token = " 7gr9ZcoqndIKP7v3PcbU6rRcf86lAN"
+    token = " XTVFdUPNEkAf8bQelgG3EHQKU9yeZ7"
     wallet_address = "0xc0f6080a153fb94b299bc103da13e8b29b59ba02"
 
     profile_data = {

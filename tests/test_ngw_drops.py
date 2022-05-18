@@ -76,6 +76,24 @@ def test_auction_live():
     Assertions().check_success_status(live_auction_req)
 
 
+def test_currency_rates():
+    param = {
+        "source_currency": "ETH",
+        "base_currency": "USD",
+        "order_by": "-created_at",
+        "limit": 1,
+    }
+    currency_rate_req = ngw_get_req_with_param("rates", param)
+    # Asserting response status code
+    Assertions().check_success_status(currency_rate_req)
+    Assertions().assert_response_with_expected_result(
+        currency_rate_req, "sourceCurrency", param["source_currency"]
+    )
+    Assertions().assert_response_with_expected_result(
+        currency_rate_req, "baseCurrency", param["base_currency"]
+    )
+
+
 def ngw_get_req_with_param(endpoint, param):
     req = APIRequest().get(
         EnvironmentVars.nfgwURL + Endpoint().get_endpoint(endpoint),

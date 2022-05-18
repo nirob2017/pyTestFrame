@@ -6,6 +6,7 @@ from services.assertions.asserts import Assertions
 from services.rest_actions.requests import APIRequest
 from test_data.constants import Constants
 from test_data.endpoints import Endpoint
+from utils.helpers import nifty_auth_get_request, nifty_get_request
 
 
 @pytest.mark.xfail
@@ -42,7 +43,6 @@ def test_login_with_refresh_token():
         ),
     )
     Assertions().check_success_status(req)
-    print(req.text)
 
 
 def test_purchase_verified_nft_without_login():
@@ -60,7 +60,6 @@ def test_purchase_verified_nft_without_login():
 
     # Retrieving store name from json data
     store_name = JSONUtil().get_value_list_by_node_name("storeURL", data)
-    print(store_name[0])
     Assertions().check_success_status(verified_page_req)
 
     # Visiting First NFT Store page
@@ -76,7 +75,6 @@ def test_purchase_verified_nft_without_login():
     contract_address = JSONUtil().get_value_list_by_node_name(
         "contractAddress", process_store
     )
-    print(contract_address[0])
     Assertions().check_success_status(store_req)
 
     # Visiting First NFT page
@@ -115,7 +113,6 @@ def test_purchase_curated_nft_with_login():
 
     # Retrieving store name from json data
     store_name = JSONUtil().get_value_list_by_node_name("storeURL", data)
-    print(store_name[3])
     Assertions().check_success_status(collection_page_req)
 
     # Visiting First NFT Store page
@@ -131,7 +128,6 @@ def test_purchase_curated_nft_with_login():
     contract_address = JSONUtil().get_value_list_by_node_name(
         "contractAddress", process_store
     )
-    print(contract_address)
     Assertions().check_success_status(store_req)
 
     # Visiting First NFT page
@@ -155,15 +151,15 @@ def test_purchase_curated_nft_with_login():
     assert eth_response[0]["eth"] == 0
 
     # Checking Gemini balance API
-    gemini_balance_response = make_get_request_with_token("gemini_balance")
+    gemini_balance_response = nifty_auth_get_request("gemini_balance")
     Assertions().check_bad_Request(gemini_balance_response)
 
     # Checking Gemini token API
-    gemini_token_response = make_get_request_with_token("gemini_token")
+    gemini_token_response = nifty_auth_get_request("gemini_token")
     Assertions().check_internal_server_error_response(gemini_token_response)
 
     # Checking Complete purchase API
-    purchase_response = make_get_request_with_token("complete_purchase")
+    purchase_response = nifty_auth_get_request("complete_purchase")
     Assertions().check_success_status(purchase_response)
 
     # Checking Terms and condition API
@@ -236,16 +232,14 @@ def test_select_curated_nft_from_marketplace():
     Test for visiting marketplace page, then collection page, after that selecting and NFT &
     making a purchase of an NFT using bearer token
     """
+    page_data = {"current": 1, "size": 1}
+    filter_data = {"listing_type": "curated"}
+    params = {
+        "page": JSONUtil().dump_json(page_data),
+        "filter": JSONUtil().dump_json(filter_data),
+    }
 
-    params = 'page={"current":1,"size":1}&filter={"listing_type":"curated"}'
-
-    market_page_curated_req = APIRequest().get(
-        EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["marketplace_project"],
-        make_header(
-            Constants().headers["content_type"], Constants().headers["app_x_encoded"]
-        ),
-        params,
-    )
+    market_page_curated_req = nifty_get_request("marketplace_project", params)
 
     # Processing Json Response
     result = JSONUtil().load_json(market_page_curated_req.text)
@@ -254,21 +248,16 @@ def test_select_curated_nft_from_marketplace():
     store_contract_address = JSONUtil().find_values_from_json_using_key(
         "contractAddress", market_page_curated_req.text
     )
-    print(store_contract_address)
 
-    store_params = (
-        'page={"current":1,"size":52}&filter={"listing_type":[],'
-        '"contractAddress":"0x38cb271642fbd19a2592a15504420b1a78288a62"} '
-    )
+    page = {"current": 1, "size": 52}
+    filters = {"listing_type": [], "contractAddress": store_contract_address[0]}
+    store_params = {
+        "page": JSONUtil().dump_json(page),
+        "filter": JSONUtil().dump_json(filters),
+    }
 
     # Visiting NFT store collection page
-    collection_page_req = APIRequest().get(
-        EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["marketplace_page"],
-        make_header(
-            Constants().headers["content_type"], Constants().headers["app_x_encoded"]
-        ),
-        store_params,
-    )
+    collection_page_req = nifty_get_request("marketplace_page", store_params)
     Assertions().check_success_status(collection_page_req)
 
     # Finding first NFT contract address
@@ -296,13 +285,7 @@ def test_most_popular_nft():
         "order_by": "asc",
     }
 
-    most_popular_nft_req = APIRequest().get(
-        EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["popular_nft"],
-        make_header(
-            Constants().headers["content_type"], Constants().headers["app_x_encoded"]
-        ),
-        param,
-    )
+    most_popular_nft_req = nifty_get_request("popular_nft", param)
     Assertions().check_success_status(most_popular_nft_req)
 
     # Finding all contract address from json response
@@ -339,13 +322,7 @@ def test_recent_activity():
         "onlySales": True,
         "includeProfiles": False,
     }
-    recent_activity_req = APIRequest().get(
-        EnvironmentVars.nfgwURL + Endpoint().get_endpoint()["recent_activity"],
-        make_header(
-            Constants().headers["content_type"], Constants().headers["app_x_encoded"]
-        ),
-        param,
-    )
+    recent_activity_req = nifty_get_request("recent_activity", param)
     Assertions().check_success_status(recent_activity_req)
 
     # Finding all contract address from json response
@@ -397,19 +374,8 @@ def test_an_user_profile_url():
     assert Constants().wallet_address == user_wallet_address[0]
 
 
-def make_get_request_with_token(endpoint):
-    req = APIRequest().get(
-        EnvironmentVars.nfgwURL + Endpoint().get_endpoint()[endpoint],
-        header_with_bearer_token(),
-    )
-    return req
-
-
 def authentication_success_assertion_of_api(endpoint, key=None):
-    req = APIRequest().get(
-        EnvironmentVars.nfgwURL + Endpoint().get_endpoint()[endpoint],
-        header_with_bearer_token(),
-    )
+    req = nifty_auth_get_request(endpoint)
 
     # Asserting response status code
     Assertions().check_success_status(req)

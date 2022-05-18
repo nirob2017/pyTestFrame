@@ -58,6 +58,7 @@ class Endpoint:
             "drop_schedule": "drops/schedule/",
             "recent_drops": "home/featured/",
             "live_auctions": "auctions/live/",
+            "rates": "v1/fxrates/",
         }
         if key is None:
             return endpoints
